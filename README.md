@@ -98,7 +98,7 @@ Network Training
 
 
 ## Core Insight
-In reinforcement learning, changing rewards changes behavior.
+In reinforcement learning, the reward function defines the behavior being optimized. Small changes in incentives can produce significant changes in learning outcomes, even when the model architecture remains unchanged.
 Understanding incentive design is often more important than changing the model itself.
 
 ## Author
