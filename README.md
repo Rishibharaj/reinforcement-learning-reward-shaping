@@ -20,6 +20,8 @@ Exploration of agent behavior and learning dynamics
 
 
 ## Objective
+![](lunar-lander.png)
+
 Evaluate how reward shaping influences:
 - Agent behavior
 - Learning speed
