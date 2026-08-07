@@ -187,6 +187,4 @@ Rishi Bharaj
 PMP® | Oracle Generative AI Professional | ISO 9001 Lead Auditor
 
 AI Experimentation • Reinforcement Learning • Decision Systems • Process Improvement
-Training process
 
-The only difference was reward design.
