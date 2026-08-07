@@ -63,6 +63,8 @@ This allowed behavioral differences to be attributed directly to reward design r
 ## Training Loop Change
 
 The baseline agent stored the environment reward directly in experience replay:
+
+```diff
 while not done:
     action = choose_action(state, epsilon)
     next_state, reward, done, _ = env.step(action)
@@ -75,9 +77,14 @@ while not done:
     state = next_state
     episode_reward += reward
     train_q_network()
+```
 
-  The original environment reward was retained for performance reporting, while the shaped reward was used during learning.
-  def shape_reward(state, reward):
+The original environment reward was retained for performance reporting, while the shaped reward was used during learning.
+
+## Reward Shaping Function
+
+```python
+def shape_reward(state, reward):
     x = state[0]
     vy = state[3]
     angle = state[4]
@@ -88,7 +95,7 @@ while not done:
     shaped += -0.1 * abs(angle)
 
     return shaped
-
+```
 ## Reward Formula
 R' = Renv - 0.1|x| - 0.1|vy| - 0.1|θ|
 
@@ -107,27 +114,22 @@ The additional penalties were designed to encourage:
 
 Rather than rewarding only the final landing outcome, the reward-shaped agent received additional guidance throughout the descent.
 
-## Reward Shaping Logic
-Additional penalties were introduced for:
-Horizontal Position: Penalty for moving away from landing center
-Vertical Velocity: Penalty for excessive descent speed
-Orientation: 
-
-The intention was to encourage:
-- Centered positioning
-- Controlled descent
-- Stable orientation
 
 ## Repository Structure
 
+```text
 ├── baseline_dqn.py
 ├── reward_shaped_dqn.py
 ├── lunar-lander.png
-├── README.md
+└── README.md
+```
+
 
 ## Source Code
-![](baseline_dqn.py) → Original DQN implementation using the environment reward.
-![](reward_shaped_dqn.py) → DQN implementation with custom reward shaping.
+
+baseline_dqn.py → Original DQN implementation using the environment reward.
+
+reward_shaped_dqn.py → DQN implementation with custom reward shaping.
 
 ## Experimental Hypothesis
 The shaped reward function would provide additional learning signals during flight and encourage safer, more controlled landing behavior than the baseline reward structure.
@@ -143,6 +145,7 @@ The experiment demonstrated that reward design significantly influenced learned 
 - Behavioral improvements did not always translate into higher cumulative rewards.
 
 # Technical Architecture
+```
 Environment State
          ↓
 Policy Network
@@ -156,6 +159,7 @@ Reward Shaping
 Experience Replay
          ↓
 Network Training
+```
 
 ## What This Experiment Demonstrates
 
