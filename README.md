@@ -44,6 +44,69 @@ Reward-Shaped Agent
 (Environment Reward
  + Custom Penalties)
 
+## Experimental Modification
+
+To isolate the impact of reward engineering, all core components remained unchanged between experiments:
+- Neural network architecture
+- Learning rate
+- Discount factor (γ)
+- Replay buffer configuration
+- Batch size
+- Exploration strategy (ε-greedy)
+- Target network updates
+- Training duration
+
+The reward function was the only modified component.
+
+This allowed behavioral differences to be attributed directly to reward design rather than changes in model architecture or training configuration.
+
+## Training Loop Change
+
+The baseline agent stored the environment reward directly in experience replay:
+while not done:
+    action = choose_action(state, epsilon)
+    next_state, reward, done, _ = env.step(action)
+
+-   memory.append((state, action, reward, next_state, done))
+
++   shaped_reward = shape_reward(next_state, reward)
++   memory.append((state, action, shaped_reward, next_state, done))
+
+    state = next_state
+    episode_reward += reward
+    train_q_network()
+
+  The original environment reward was retained for performance reporting, while the shaped reward was used during learning.
+  def shape_reward(state, reward):
+    x = state[0]
+    vy = state[3]
+    angle = state[4]
+
+    shaped = reward
+    shaped += -0.1 * abs(x)
+    shaped += -0.1 * abs(vy)
+    shaped += -0.1 * abs(angle)
+
+    return shaped
+
+## Reward Formula
+R' = Renv - 0.1|x| - 0.1|vy| - 0.1|θ|
+
+Where:
+Renv = Original Lunar Lander reward
+x = Horizontal position
+vy = Vertical velocity
+θ = Lander orientation angle
+
+## Intended Behavioral Incentives
+
+The additional penalties were designed to encourage:
+- Maintaining a position closer to the landing pad center
+- Reducing excessive descent velocity
+- Maintaining a more stable orientation throughout flight
+
+Rather than rewarding only the final landing outcome, the reward-shaped agent received additional guidance throughout the descent.
+
 ## Reward Shaping Logic
 Additional penalties were introduced for:
 Horizontal Position: Penalty for moving away from landing center
@@ -55,24 +118,28 @@ The intention was to encourage:
 - Controlled descent
 - Stable orientation
 
+## Repository Structure
+├── baseline_dqn.py
+├── reward_shaped_dqn.py
+├── lunar-lander.png
+├── README.md
+
+## Source Code
+!baseline_dqn.py → Original DQN implementation using the environment reward.
+reward_shaped_dqn.py → DQN implementation with custom reward shaping.
+
 ## Experimental Hypothesis
-The shaped reward function would guide the agent toward safer and more controlled landing behavior by providing additional learning signals during flight.
+The shaped reward function would provide additional learning signals during flight and encourage safer, more controlled landing behavior than the baseline reward structure.
 
 ## Results
-The experiment demonstrated that reward design can significantly influence learned behavior.
+The experiment demonstrated that reward design significantly influenced learned behavior, despite the neural network architecture and training process remaining unchanged.
 
-## Key observations:
-- Small reward modifications produced meaningful behavioral changes
-- Additional incentives introduced competing objectives
-- Reward scaling became an important consideration
-- Learning performance did not necessarily improve despite encouraging seemingly desirable behavior
-
-## Key Learning
-The experiment reinforced a fundamental reinforcement learning principle:
-
-The reward function defines the behavior being optimized.
-
-A reward structure that appears logical from a human perspective may introduce unintended consequences for an autonomous learning system.
+## Key Observations
+- Small reward modifications produced noticeable behavioral changes.
+- Additional incentives introduced competing objectives.
+- Reward scaling affected learning stability.
+- More intuitive rewards did not automatically improve overall performance.
+- Behavioral improvements did not always translate into higher cumulative rewards.
 
 # Technical Architecture
 Environment State
@@ -90,18 +157,23 @@ Experience Replay
 Network Training
 
 ## What This Experiment Demonstrates
+
 - Reinforcement Learning Fundamentals
 - Deep Q-Networks (DQN)
 - Reward Shaping
 - Experimental Design
-- Behavioral Analysis
 - AI System Evaluation
-- Learning Through Hypothesis Testing
+- Behavioral Analysis
+- Hypothesis Testing
 
 
 ## Core Insight
-In reinforcement learning, the reward function defines the behavior being optimized. Small changes in incentives can produce significant changes in learning outcomes, even when the model architecture remains unchanged.
-Understanding incentive design is often more important than changing the model itself.
+
+> In reinforcement learning, the reward function defines the behavior being optimized.
+
+This experiment showed that even small changes to incentives can produce meaningful changes in learning outcomes, despite using the same model architecture and training configuration.
+
+Understanding incentive design is often as important as model design.
 
 ## Author
 
