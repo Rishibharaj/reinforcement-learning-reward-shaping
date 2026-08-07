@@ -119,14 +119,15 @@ The intention was to encourage:
 - Stable orientation
 
 ## Repository Structure
+
 ├── baseline_dqn.py
 ├── reward_shaped_dqn.py
 ├── lunar-lander.png
 ├── README.md
 
 ## Source Code
-!baseline_dqn.py → Original DQN implementation using the environment reward.
-reward_shaped_dqn.py → DQN implementation with custom reward shaping.
+![](baseline_dqn.py) → Original DQN implementation using the environment reward.
+![](reward_shaped_dqn.py) → DQN implementation with custom reward shaping.
 
 ## Experimental Hypothesis
 The shaped reward function would provide additional learning signals during flight and encourage safer, more controlled landing behavior than the baseline reward structure.
