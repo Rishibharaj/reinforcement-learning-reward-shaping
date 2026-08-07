@@ -49,7 +49,6 @@ def choose_action(state, epsilon):
     q_values = q_network.predict(np.expand_dims(state, axis=0), verbose=0)
     return np.argmax(q_values[0])
 
-### Reward Shaping Function
 # ============================================================
 # Reward Shaping
 #
@@ -64,7 +63,7 @@ def choose_action(state, epsilon):
 # encourage centered positioning, controlled descent,
 # and stable orientation.
 # ============================================================
-```python
+
 def shape_reward(state, reward):
     x = state[0]
     vy = state[3]
@@ -76,7 +75,6 @@ def shape_reward(state, reward):
     shaped += -0.1 * abs(angle)
 
     return shaped
-```
 
 # Train the Q-network using a mini-batch from memory
 def train_q_network():
@@ -102,23 +100,15 @@ def train_q_network():
 # The baseline implementation stores the environment reward
 # directly in experience replay.
 #
-# This version applies reward shaping before storing the
-# experience. Additional penalties are added for:
-#
-#   - Horizontal displacement from the landing center
-#   - Excessive vertical descent speed
-#   - Unstable orientation angle
-#
-# The objective is to encourage more controlled and stable
-# landing behavior while keeping the DQN architecture,
-# hyperparameters, and training process unchanged.
-#
 # Original:
 # memory.append((state, action, reward, next_state, done))
 #
 # Modified:
 # shaped_reward = shape_reward(next_state, reward)
 # memory.append((state, action, shaped_reward, next_state, done))
+#
+# All other aspects of the DQN implementation
+# remain unchanged.
 # ============================================================
 
 for batch in range(num_batches):
